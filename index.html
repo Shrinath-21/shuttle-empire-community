@@ -2,17 +2,26 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Shuttle Empire Community Booking</title>
+  <title>Shuttle Empire Community</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 16px;
-      max-width: 480px;
+      max-width: 420px;
       margin: auto;
+      padding: 16px;
     }
-    input, select, button {
+    h2 {
+      margin-bottom: 6px;
+    }
+    .bot {
+      background: #f3f3f3;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    input, button {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
@@ -24,276 +33,47 @@
       border: none;
       border-radius: 6px;
     }
-    .hidden { display: none; }
-    .player { margin-bottom: 12px; }
-    .summary {
-      background: #f3f3f3;
-      padding: 10px;
-      border-radius: 6px;
-      margin: 10px 0;
-    }
   </style>
 </head>
 
 <body>
 
-<h2>Shuttle Empire Community</h2>
-<p>Community play booking</p>
+<h2>Shuttle Empire Community 🏸</h2>
 
-<!-- STEP 1 : DETAILS -->
-<div id="step1">
-  
-  <input id="mobile" placeholder="Mobile Number">
-  <input id="email" placeholder="Email (mandatory)">
-
-  <h4>Players</h4>
-
-  <div id="playersContainer">
-    <div class="player">
-      <input placeholder="Player 1 Name" class="pname">
-      <select class="plevel">
-        <option value="">Playing level</option>
-        <option>Beginner</option>
-        <option>Intermediate</option>
-        <option>Advance</option>
-      </select>
-    </div>
-  </div>
-
-  <button type="button" id="addPlayerBtn">+ Add Member</button>
-  <button type="button" id="continueBtn">Almost done – continue</button>
+<div class="bot">
+  Hi 👋  
+  Let’s book your community play session.
 </div>
 
-<!-- STEP 2 : PAYMENT -->
-<div id="step2" class="hidden">
-  <div class="summary">
-    <p id="summary"></p>
-    <p><b>Total Amount:</b> ₹<span id="amount"></span></p>
-  </div>
+<input id="name" placeholder="Your name">
+<input id="mobile" placeholder="Mobile number">
+<input id="members" type="number" min="1" max="6" placeholder="Number of players (1–6)">
 
-  <p><b>Upload payment screenshot</b></p>
-  <input type="file" id="paymentFile" accept="image/*">
-
-  <button id="confirmBtn">Confirm Booking</button>
-</div>
-
-<!-- STEP 3 : SUCCESS -->
-<div id="step3" class="hidden">
-  <h3>✅ Booking Confirmed</h3>
-
-  <p>
-    <b>Your Booking ID:</b>
-    <span id="bookingId"></span>
-  </p>
-
-  <p>
-    Thank you for booking with <b>Shuttle Empire Community</b> 🏸
-  </p>
-
-  <div class="summary">
-    <h4>Important Rules</h4>
-    <ul>
-      <li>Only <b>non-marking gum sole shoes</b> allowed (or play in socks)</li>
-      <li><b>Shuttles will be provided</b> by the community</li>
-      <li>Bring your own racket (available on rent at the academy)</li>
-    </ul>
-  </div>
-
-  <p>
-    If you have any questions, feel free to reach us at
-    <b>99999999</b> between <b>5 PM – 9 PM</b>.
-  </p>
-
-  <p><b>See you on court!</b> 🏸</p>
-</div>
+<button onclick="continueToBooking()">Continue</button>
 
 <script>
-/* =====================
-   HELPERS & GLOBALS
-===================== */
-function getParam(key) {
-  return new URLSearchParams(window.location.search).get(key);
+function continueToBooking() {
+  const name = document.getElementById("name").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+  const members = document.getElementById("members").value;
+
+  if (!name || !mobile || !members) {
+    alert("Please fill all details");
+    return;
+  }
+
+  const params = new URLSearchParams({
+    name: name,
+    mobile: mobile,
+    members: members,
+    session: "1"
+  });
+
+  window.location.href =
+    "https://script.google.com/macros/s/AKfycbwun1eA1dSvU517OwwaDFvMAFy5Y7Z2ao6aRgAM4OPa7u_i4d9foDcYdzH4bpcsRywcVA/exec?" +
+    params.toString();
 }
-
-let players = [];
-const maxPlayers = 6;
-
-/* =====================
-   PAGE LOAD (CHATBOT DATA)
-===================== */
-window.onload = () => {
-  const chatbotName = getParam("name");
-  const chatbotMobile = getParam("mobile");
-  const chatbotMembers = parseInt(getParam("members"));
-  const chatbotSession = getParam("session");
-
-  // Autofill & lock mobile
-  if (chatbotMobile) {
-    const mobileInput = document.getElementById("mobile");
-    mobileInput.value = chatbotMobile;
-    mobileInput.readOnly = true;
-  }
-
-  // Autofill Player 1 name
-  if (chatbotName) {
-    const firstPlayer = document.querySelector(".pname");
-    if (firstPlayer) {
-      firstPlayer.value = chatbotName;
-      firstPlayer.readOnly = true;
-    }
-  }
-
-  // Store for later
-  if (chatbotMembers) window.prefilledMembers = chatbotMembers;
-  if (chatbotSession) window.selectedSession = chatbotSession;
-};
-
-/* =====================
-   ADD MEMBER MANUALLY
-===================== */
-document.getElementById("addPlayerBtn").onclick = () => {
-  const container = document.getElementById("playersContainer");
-  const count = container.children.length;
-
-  if (count >= maxPlayers) {
-    alert("Maximum 6 players allowed in one booking");
-    return;
-  }
-
-  const div = document.createElement("div");
-  div.className = "player";
-  div.innerHTML = `
-    <input placeholder="Player ${count + 1} Name" class="pname">
-    <select class="plevel">
-      <option value="">Playing level</option>
-      <option>Beginner</option>
-      <option>Intermediate</option>
-      <option>Advance</option>
-    </select>
-  `;
-  container.appendChild(div);
-};
-
-/* =====================
-   CONTINUE → PAYMENT
-===================== */
-document.getElementById("continueBtn").onclick = () => {
-
-  /* 🔹 FIX 3 — AUTO CREATE PLAYERS FROM CHATBOT */
-  if (window.prefilledMembers) {
-    const container = document.getElementById("playersContainer");
-    const existing = container.children.length;
-
-    for (let i = existing; i < window.prefilledMembers; i++) {
-      if (i >= maxPlayers) break;
-
-      const div = document.createElement("div");
-      div.className = "player";
-      div.innerHTML = `
-        <input placeholder="Player ${i + 1} Name" class="pname">
-        <select class="plevel">
-          <option value="">Playing level</option>
-          <option>Beginner</option>
-          <option>Intermediate</option>
-          <option>Advance</option>
-        </select>
-      `;
-      container.appendChild(div);
-    }
-  }
-
-  /* 🔹 Email validation ONLY */
-  const bookerEmail = document.getElementById("email").value.trim();
-  if (!bookerEmail) {
-    alert("Email is mandatory");
-    return;
-  }
-
-  /* 🔹 Collect players */
-  players = [];
-  document.querySelectorAll("#playersContainer .player")
-    .forEach((div, index) => {
-      const pname = div.querySelector(".pname").value.trim();
-      const plevel = div.querySelector(".plevel").value;
-
-      if (pname && plevel) {
-        players.push({
-          name: pname,
-          level: plevel,
-          is_booker: index === 0
-        });
-      }
-    });
-
-  if (players.length === 0) {
-    alert("Please add at least one player");
-    return;
-  }
-
-  /* 🔹 Update summary */
-  document.getElementById("amount").innerText = players.length * 350;
-  document.getElementById("summary").innerText =
-    players.length + " player(s) | 9:00 PM – 11:00 PM";
-
-  document.getElementById("step1").classList.add("hidden");
-  document.getElementById("step2").classList.remove("hidden");
-};
-
-/* =====================
-   FINAL SUBMIT
-===================== */
-document.getElementById("confirmBtn").onclick = () => {
-  const file = document.getElementById("paymentFile").files[0];
-  if (!file) {
-    alert("Please upload payment screenshot");
-    return;
-  }
-
-  // 🔹 IF running on GitHub → redirect to Apps Script
-  if (typeof google === "undefined" || !google.script) {
-    const params = new URLSearchParams({
-      name: players[0].name,
-      mobile: document.getElementById("mobile").value,
-      members: players.length,
-      session: window.selectedSession || "1"
-    });
-
-    window.location.href =
-      "https://script.google.com/macros/s/AKfycbwun1eA1dSvU517OwwaDFvMAFy5Y7Z2ao6aRgAM4OPa7u_i4d9foDcYdzH4bpcsRywcVA/exec" +
-  "?" +
-  params.toString();
-
-    return;
-  }
-
-  // 🔹 IF running inside Apps Script → submit booking
-  const reader = new FileReader();
-  reader.onload = e => {
-    google.script.run
-      .withSuccessHandler(msg => {
-        const match = msg.match(/BK-[0-9\-]+/);
-        if (match) {
-          document.getElementById("bookingId").innerText = match[0];
-        }
-
-        document.getElementById("step2").classList.add("hidden");
-        document.getElementById("step3").classList.remove("hidden");
-      })
-      .submitCommunityBooking({
-        session_id: window.selectedSession || "1",
-        booker_name: players[0].name,
-        mobile: document.getElementById("mobile").value,
-        email: document.getElementById("email").value.trim(),
-        players: players,
-        paymentImageBase64: e.target.result
-      });
-  };
-
-  reader.readAsDataURL(file);
-};
-
 </script>
 
 </body>
 </html>
-
