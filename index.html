@@ -1,318 +1,270 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Shuttle Empire – Community Assistant</title>
+<title>Shuttle Empire – Community Play</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-:root{
-  --dark:#0b0b0b;
-  --card:#ffffff;
-  --accent:#22c55e;
-  --bg:#f4f6fa;
-  --radius:18px;
+:root {
+  --dark: #0f0f0f;
+  --accent: #22c55e;
+  --bg: #f4f6f8;
+  --card: #ffffff;
 }
 
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Inter,system-ui,Arial;
-  background:var(--bg);
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
 }
 
-/* ===== HEADER ===== */
-.header{
-  background:linear-gradient(135deg,#000,#1b1b1b);
-  color:#fff;
-  padding:18px 16px 22px;
-  text-align:center;
-  border-bottom-left-radius:24px;
-  border-bottom-right-radius:24px;
-  box-shadow:0 10px 30px rgba(0,0,0,.25);
+header {
+  background: linear-gradient(135deg, #000, #222);
+  color: #fff;
+  padding: 18px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.25);
 }
 
-.header h1{
-  margin:0;
-  font-size:22px;
-  font-weight:800;
-  letter-spacing:.4px;
+header small {
+  display: block;
+  font-size: 13px;
+  opacity: .8;
+  margin-top: 4px;
 }
 
-.header p{
-  margin:6px 0 0;
-  font-size:14px;
-  opacity:.9;
+.chat {
+  max-width: 480px;
+  margin: auto;
+  padding: 16px;
 }
 
-/* ===== APP ===== */
-.app{
-  max-width:420px;
-  margin:auto;
-  padding:14px;
+.bot, .user {
+  padding: 12px 16px;
+  border-radius: 16px;
+  margin: 10px 0;
+  max-width: 85%;
+  animation: fadeIn .3s ease;
 }
 
-.chat{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+.bot {
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
 }
 
-/* ===== BUBBLES ===== */
-.bubble{
-  max-width:85%;
-  padding:12px 14px;
-  border-radius:var(--radius);
-  font-size:15px;
-  line-height:1.4;
+.user {
+  background: var(--accent);
+  color: #fff;
+  margin-left: auto;
 }
 
-.bot{
-  background:var(--card);
-  align-self:flex-start;
-  box-shadow:0 8px 22px rgba(0,0,0,.08);
+input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 16px;
 }
 
-.user{
-  background:var(--accent);
-  color:#fff;
-  align-self:flex-end;
+button {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background: #000;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
 }
 
-/* ===== BUTTONS ===== */
-.options{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.btn{
-  flex:1;
-  min-width:90px;
-  padding:12px;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg,#111,#000);
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
+.slot {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
 }
 
-.btn.alt{
-  background:#e5e7eb;
-  color:#111;
+.slot strong {
+  font-size: 16px;
 }
 
-/* ===== INPUT ===== */
-.input{
-  width:100%;
-  padding:12px;
-  font-size:15px;
-  border-radius:14px;
-  border:1px solid #ddd;
+.slot small {
+  display: block;
+  opacity: .7;
+  margin-top: 4px;
 }
 
-/* ===== SESSION CARD ===== */
-.session{
-  background:#fff;
-  border-radius:16px;
-  padding:14px;
-  box-shadow:0 10px 26px rgba(0,0,0,.1);
+.slot .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 }
 
-.session h4{
-  margin:0 0 6px;
-  font-size:16px;
+.badge {
+  font-weight: 600;
+  color: #16a34a;
 }
 
-.session small{
-  color:#555;
-}
-
-.slot{
-  display:flex;
-  justify-content:space-between;
-  margin-top:8px;
-  font-size:14px;
-}
-
-.available{
-  color:green;
-  font-weight:700;
-}
-
-/* ===== TYPING ===== */
-.typing{
-  display:flex;
-  gap:6px;
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  background:#bbb;
-  border-radius:50%;
-  animation:blink 1.4s infinite both;
-}
-
-.dot:nth-child(2){animation-delay:.2s}
-.dot:nth-child(3){animation-delay:.4s}
-
-@keyframes blink{
-  0%{opacity:.2}
-  20%{opacity:1}
-  100%{opacity:.2}
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(6px)}
+  to {opacity:1; transform:none}
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h1>Shuttle Empire 🏸</h1>
-  <p>Community Play Assistant</p>
-</div>
+<header>
+  Shuttle Empire 🏸
+  <small>Community Play Assistant</small>
+</header>
 
-<div class="app">
-  <div class="chat" id="chat"></div>
-</div>
+<div class="chat" id="chat"></div>
 
 <script>
+/* ================= STATE ================= */
+const state = {
+  name: "",
+  mobile: "",
+  players: 0,
+  session: null
+};
+
+const BOOKING_URL =
+"https://script.google.com/macros/s/AKfycbwun1eA1dSvU517OwwaDFvMAFy5Y7Z2ao6aRgAM4OPa7u_i4d9foDcYdzH4bpcsRywcVA/exec";
+
+/* ================= UI HELPERS ================= */
 const chat = document.getElementById("chat");
 
-/* ===== STATE ===== */
-let members = 1;
-let name = "";
-let mobile = "";
-let sessionId = "";
-
-/* ===== MOCK SESSIONS (REPLACE WITH API LATER) ===== */
-const sessions = [
-  { id:"1", date:"27 Dec 2025", time:"9:00 – 11:00 PM", available:24, total:24 },
-  { id:"2", date:"28 Dec 2025", time:"9:00 – 11:00 PM", available:18, total:24 }
-];
-
-/* ===== HELPERS ===== */
-function bot(msg){
-  const d = document.createElement("div");
-  d.className = "bubble bot";
-  d.innerHTML = msg;
-  chat.appendChild(d);
+function bot(msg) {
+  chat.innerHTML += `<div class="bot">${msg}</div>`;
   chat.scrollTop = chat.scrollHeight;
 }
 
-function user(msg){
-  const d = document.createElement("div");
-  d.className = "bubble user";
-  d.innerText = msg;
-  chat.appendChild(d);
+function user(msg) {
+  chat.innerHTML += `<div class="user">${msg}</div>`;
   chat.scrollTop = chat.scrollHeight;
 }
 
-function typing(cb){
-  const t = document.createElement("div");
-  t.className = "bubble bot";
-  t.innerHTML = `<div class="typing">
-    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-  </div>`;
-  chat.appendChild(t);
-  chat.scrollTop = chat.scrollHeight;
-  setTimeout(()=>{ chat.removeChild(t); cb(); },800);
+function askInput(placeholder, cb, type="text") {
+  const div = document.createElement("div");
+  div.innerHTML = `<input type="${type}" placeholder="${placeholder}">`;
+  chat.appendChild(div);
+  const input = div.querySelector("input");
+  input.focus();
+  input.onkeydown = e => {
+    if (e.key === "Enter" && input.value.trim()) {
+      div.remove();
+      cb(input.value.trim());
+    }
+  };
 }
 
-/* ===== START ===== */
-typing(()=>bot("Hi 👋 Ready to book community play today?"));
-typing(()=>{ bot("How many players are coming?"); showPlayers(); });
-
-/* ===== STEP 1 – PLAYERS ===== */
-function showPlayers(){
-  const o = document.createElement("div");
-  o.className="options";
-  [1,2,3,4,5,6].forEach(n=>{
-    const b=document.createElement("button");
-    b.className="btn";
-    b.innerText=n+" Player"+(n>1?"s":"");
-    b.onclick=()=>{ members=n; user(b.innerText); askName(); };
-    o.appendChild(b);
-  });
-  chat.appendChild(o);
-}
-
-/* ===== STEP 2 – NAME ===== */
-function askName(){
-  typing(()=>{
-    bot("What’s your name?");
-    const i=document.createElement("input");
-    i.className="input";
-    i.placeholder="Your name";
-    i.onchange=()=>{ name=i.value.trim(); if(name){ user(name); askMobile(); } };
-    chat.appendChild(i);
-    i.focus();
-  });
-}
-
-/* ===== STEP 3 – MOBILE ===== */
-function askMobile(){
-  typing(()=>{
-    bot("Your mobile number 📱");
-    const i=document.createElement("input");
-    i.className="input";
-    i.type="tel";
-    i.placeholder="10-digit mobile number";
-    i.maxLength=10;
-    i.onchange=()=>{
-      if(!/^\d{10}$/.test(i.value)){ alert("Enter valid mobile"); return; }
-      mobile=i.value;
-      user(mobile);
-      showSessions();
+function askButtons(options) {
+  const div = document.createElement("div");
+  div.className = "buttons";
+  options.forEach(o => {
+    const b = document.createElement("button");
+    b.textContent = o.label;
+    b.onclick = () => {
+      div.remove();
+      o.onClick();
     };
-    chat.appendChild(i);
-    i.focus();
+    div.appendChild(b);
+  });
+  chat.appendChild(div);
+}
+
+/* ================= FLOW ================= */
+
+bot("👋 Hi! Ready to book community play?");
+setTimeout(() => askName(), 500);
+
+function askName() {
+  bot("What’s your name?");
+  askInput("Your name", v => {
+    state.name = v;
+    user(v);
+    askMobile();
   });
 }
 
-/* ===== STEP 4 – SESSIONS ===== */
-function showSessions(){
-  typing(()=>bot("Available sessions 👇"));
-  sessions.forEach(s=>{
-    const d=document.createElement("div");
-    d.className="session";
-    d.innerHTML=`
-      <h4>${s.date}</h4>
-      <small>${s.time}</small>
-      <div class="slot">
-        <span>Slots</span>
-        <span class="available">${s.available}/${s.total}</span>
-      </div>
-      <button class="btn" onclick="selectSession('${s.id}')">
-        Select
-      </button>
-    `;
-    chat.appendChild(d);
-  });
-
-  const edit=document.createElement("div");
-  edit.className="options";
-  edit.innerHTML=`
-    <button class="btn alt" onclick="askName()">Edit Name</button>
-    <button class="btn alt" onclick="askMobile()">Edit Mobile</button>
-  `;
-  chat.appendChild(edit);
+function askMobile() {
+  bot("📱 Your mobile number?");
+  askInput("10-digit mobile number", v => {
+    if (!/^\d{10}$/.test(v)) {
+      bot("❌ Please enter a valid 10-digit number");
+      askMobile();
+      return;
+    }
+    state.mobile = v;
+    user(v);
+    askPlayers();
+  }, "tel");
 }
 
-/* ===== STEP 5 – REDIRECT ===== */
-function selectSession(id){
-  sessionId=id;
-  user("Session selected");
-  typing(()=>{
-    bot("Redirecting to booking page…");
-    setTimeout(()=>{
-      window.location.href=
-        "https://script.google.com/macros/s/AKfycbwun1eA1dSvU517OwwaDFvMAFy5Y7Z2ao6aRgAM4OPa7u_i4d9foDcYdzH4bpcsRywcVA/exec"+
-        `?name=${encodeURIComponent(name)}&mobile=${mobile}&members=${members}&session=${sessionId}`;
-    },900);
+function askPlayers() {
+  bot("🏸 How many players are coming?");
+  askButtons([1,2,3,4,5,6].map(n => ({
+    label: `${n} Player${n>1?"s":""}`,
+    onClick: () => {
+      state.players = n;
+      user(`${n} Player${n>1?"s":""}`);
+      showSlots();
+    }
+  })));
+}
+
+function showSlots() {
+  bot("📅 Available sessions");
+
+  /* 👉 Replace this with real API later */
+  const sessions = [
+    {id:1, date:"27 Dec 2025", time:"9:00 – 11:00 PM", avail:24, max:24},
+    {id:2, date:"28 Dec 2025", time:"9:00 – 11:00 PM", avail:18, max:24}
+  ];
+
+  sessions
+    .filter(s => s.avail >= state.players)
+    .forEach(s => {
+      const div = document.createElement("div");
+      div.className = "slot";
+      div.innerHTML = `
+        <strong>${s.date}</strong>
+        <small>${s.time}</small>
+        <div class="row">
+          <span class="badge">${s.avail}/${s.max} slots</span>
+          <button>Select</button>
+        </div>
+      `;
+      div.querySelector("button").onclick = () => {
+        state.session = s.id;
+        redirect();
+      };
+      chat.appendChild(div);
+    });
+}
+
+function redirect() {
+  const params = new URLSearchParams({
+    name: state.name,
+    mobile: state.mobile,
+    members: state.players,
+    session: state.session
   });
+
+  window.location.href = BOOKING_URL + "?" + params.toString();
 }
 </script>
 
