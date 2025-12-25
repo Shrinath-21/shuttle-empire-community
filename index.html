@@ -2,38 +2,55 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Shuttle Empire Assistant</title>
+<title>Shuttle Empire – Community Assistant</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 :root{
-  --primary:#1a1a1a;
-  --accent:#1db954;
-  --bg:#f5f7fb;
-  --bot:#ffffff;
-  --user:#1db954;
+  --dark:#0b0b0b;
+  --card:#ffffff;
+  --accent:#22c55e;
+  --bg:#f4f6fa;
   --radius:18px;
 }
 
+*{box-sizing:border-box}
+
 body{
   margin:0;
-  font-family:Inter,system-ui;
+  font-family:Inter,system-ui,Arial;
   background:var(--bg);
 }
 
+/* ===== HEADER ===== */
+.header{
+  background:linear-gradient(135deg,#000,#1b1b1b);
+  color:#fff;
+  padding:18px 16px 22px;
+  text-align:center;
+  border-bottom-left-radius:24px;
+  border-bottom-right-radius:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+.header h1{
+  margin:0;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:.4px;
+}
+
+.header p{
+  margin:6px 0 0;
+  font-size:14px;
+  opacity:.9;
+}
+
+/* ===== APP ===== */
 .app{
   max-width:420px;
   margin:auto;
   padding:14px;
-}
-
-.header{
-  text-align:center;
-  padding:12px;
-}
-
-.header h2{
-  margin:0;
 }
 
 .chat{
@@ -42,7 +59,7 @@ body{
   gap:12px;
 }
 
-/* Bubbles */
+/* ===== BUBBLES ===== */
 .bubble{
   max-width:85%;
   padding:12px 14px;
@@ -52,63 +69,83 @@ body{
 }
 
 .bot{
-  background:var(--bot);
+  background:var(--card);
   align-self:flex-start;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
 }
 
 .user{
-  background:var(--user);
+  background:var(--accent);
   color:#fff;
   align-self:flex-end;
 }
 
-/* Buttons */
+/* ===== BUTTONS ===== */
 .options{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
 }
 
-.option-btn{
+.btn{
   flex:1;
-  min-width:80px;
+  min-width:90px;
   padding:12px;
-  border-radius:14px;
   border:none;
-  background:#111;
+  border-radius:14px;
+  background:linear-gradient(135deg,#111,#000);
   color:#fff;
-  font-weight:600;
+  font-weight:700;
+  cursor:pointer;
 }
 
-/* Session cards */
+.btn.alt{
+  background:#e5e7eb;
+  color:#111;
+}
+
+/* ===== INPUT ===== */
+.input{
+  width:100%;
+  padding:12px;
+  font-size:15px;
+  border-radius:14px;
+  border:1px solid #ddd;
+}
+
+/* ===== SESSION CARD ===== */
 .session{
   background:#fff;
   border-radius:16px;
   padding:14px;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  box-shadow:0 10px 26px rgba(0,0,0,.1);
 }
 
 .session h4{
   margin:0 0 6px;
+  font-size:16px;
+}
+
+.session small{
+  color:#555;
 }
 
 .slot{
   display:flex;
   justify-content:space-between;
+  margin-top:8px;
   font-size:14px;
-  margin-top:6px;
 }
 
 .available{
   color:green;
-  font-weight:600;
+  font-weight:700;
 }
 
-/* Typing dots */
+/* ===== TYPING ===== */
 .typing{
   display:flex;
-  gap:4px;
+  gap:6px;
 }
 
 .dot{
@@ -131,113 +168,153 @@ body{
 </head>
 
 <body>
-<div class="app">
-  <div class="header">
-    <h2>Shuttle Empire 🏸</h2>
-    <p>Community Play Assistant</p>
-  </div>
 
+<div class="header">
+  <h1>Shuttle Empire 🏸</h1>
+  <p>Community Play Assistant</p>
+</div>
+
+<div class="app">
   <div class="chat" id="chat"></div>
 </div>
 
 <script>
 const chat = document.getElementById("chat");
 
+/* ===== STATE ===== */
 let members = 1;
-let sessionId = "";
+let name = "";
 let mobile = "";
+let sessionId = "";
 
-/* Utilities */
+/* ===== MOCK SESSIONS (REPLACE WITH API LATER) ===== */
+const sessions = [
+  { id:"1", date:"27 Dec 2025", time:"9:00 – 11:00 PM", available:24, total:24 },
+  { id:"2", date:"28 Dec 2025", time:"9:00 – 11:00 PM", available:18, total:24 }
+];
+
+/* ===== HELPERS ===== */
 function bot(msg){
-  const d=document.createElement("div");
-  d.className="bubble bot";
-  d.innerHTML=msg;
+  const d = document.createElement("div");
+  d.className = "bubble bot";
+  d.innerHTML = msg;
   chat.appendChild(d);
-  chat.scrollTop=chat.scrollHeight;
+  chat.scrollTop = chat.scrollHeight;
 }
 
 function user(msg){
-  const d=document.createElement("div");
-  d.className="bubble user";
-  d.innerText=msg;
+  const d = document.createElement("div");
+  d.className = "bubble user";
+  d.innerText = msg;
   chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
 }
 
 function typing(cb){
-  const t=document.createElement("div");
-  t.className="bubble bot";
-  t.innerHTML=`<div class="typing">
+  const t = document.createElement("div");
+  t.className = "bubble bot";
+  t.innerHTML = `<div class="typing">
     <div class="dot"></div><div class="dot"></div><div class="dot"></div>
   </div>`;
   chat.appendChild(t);
-  setTimeout(()=>{chat.removeChild(t);cb();},900);
+  chat.scrollTop = chat.scrollHeight;
+  setTimeout(()=>{ chat.removeChild(t); cb(); },800);
 }
 
-/* START */
+/* ===== START ===== */
 typing(()=>bot("Hi 👋 Ready to book community play today?"));
+typing(()=>{ bot("How many players are coming?"); showPlayers(); });
 
-typing(()=>{
-  bot("How many players are coming?");
-  const o=document.createElement("div");
+/* ===== STEP 1 – PLAYERS ===== */
+function showPlayers(){
+  const o = document.createElement("div");
   o.className="options";
   [1,2,3,4,5,6].forEach(n=>{
     const b=document.createElement("button");
-    b.className="option-btn";
+    b.className="btn";
     b.innerText=n+" Player"+(n>1?"s":"");
-    b.onclick=()=>{
-      members=n;
-      user(b.innerText);
-      showSessions();
-    };
+    b.onclick=()=>{ members=n; user(b.innerText); askName(); };
     o.appendChild(b);
   });
   chat.appendChild(o);
-});
+}
 
-/* Sessions */
-function showSessions(){
+/* ===== STEP 2 – NAME ===== */
+function askName(){
   typing(()=>{
-    bot("Available sessions today:");
-    const s=document.createElement("div");
-    s.className="session";
-    s.innerHTML=`
-      <h4>🕘 9:00 – 11:00 PM</h4>
-      <div class="slot">
-        <span>Slots</span>
-        <span class="available">6 / 20 available</span>
-      </div>
-      <button class="option-btn" onclick="selectSession('1')">Select</button>
-    `;
-    chat.appendChild(s);
+    bot("What’s your name?");
+    const i=document.createElement("input");
+    i.className="input";
+    i.placeholder="Your name";
+    i.onchange=()=>{ name=i.value.trim(); if(name){ user(name); askMobile(); } };
+    chat.appendChild(i);
+    i.focus();
   });
 }
 
-function selectSession(id){
-  sessionId=id;
-  user("9:00 – 11:00 PM");
+/* ===== STEP 3 – MOBILE ===== */
+function askMobile(){
   typing(()=>{
-    bot("Enter your mobile number 📱");
+    bot("Your mobile number 📱");
     const i=document.createElement("input");
-    i.placeholder="10-digit mobile";
+    i.className="input";
+    i.type="tel";
+    i.placeholder="10-digit mobile number";
+    i.maxLength=10;
     i.onchange=()=>{
+      if(!/^\d{10}$/.test(i.value)){ alert("Enter valid mobile"); return; }
       mobile=i.value;
       user(mobile);
-      finish();
+      showSessions();
     };
     chat.appendChild(i);
+    i.focus();
   });
 }
 
-function finish(){
+/* ===== STEP 4 – SESSIONS ===== */
+function showSessions(){
+  typing(()=>bot("Available sessions 👇"));
+  sessions.forEach(s=>{
+    const d=document.createElement("div");
+    d.className="session";
+    d.innerHTML=`
+      <h4>${s.date}</h4>
+      <small>${s.time}</small>
+      <div class="slot">
+        <span>Slots</span>
+        <span class="available">${s.available}/${s.total}</span>
+      </div>
+      <button class="btn" onclick="selectSession('${s.id}')">
+        Select
+      </button>
+    `;
+    chat.appendChild(d);
+  });
+
+  const edit=document.createElement("div");
+  edit.className="options";
+  edit.innerHTML=`
+    <button class="btn alt" onclick="askName()">Edit Name</button>
+    <button class="btn alt" onclick="askMobile()">Edit Mobile</button>
+  `;
+  chat.appendChild(edit);
+}
+
+/* ===== STEP 5 – REDIRECT ===== */
+function selectSession(id){
+  sessionId=id;
+  user("Session selected");
   typing(()=>{
-    bot("Redirecting you to secure booking…");
+    bot("Redirecting to booking page…");
     setTimeout(()=>{
       window.location.href=
-        `https://script.google.com/macros/s/YOUR_DEPLOY_ID/exec
-        ?members=${members}&mobile=${mobile}&session=${sessionId}`;
-    },800);
+        "https://script.google.com/macros/s/AKfycbwun1eA1dSvU517OwwaDFvMAFy5Y7Z2ao6aRgAM4OPa7u_i4d9foDcYdzH4bpcsRywcVA/exec"+
+        `?name=${encodeURIComponent(name)}&mobile=${mobile}&members=${members}&session=${sessionId}`;
+    },900);
   });
 }
 </script>
+
 </body>
 </html>
